@@ -66,6 +66,7 @@ This repository serves as a showcase for production data engineering patterns, i
 
 ## 📊 Architecture & Data Flow
 
+
 ```text
        Source Systems (CSV • JSON • Parquet)
                         │
@@ -108,6 +109,8 @@ This repository serves as a showcase for production data engineering patterns, i
 ```
 
 ## 📈 Data Flow
+
+![Architecture Diagram](screenshots/data_flow.png)
 
 ```text
 
@@ -169,6 +172,8 @@ Retail360 leverages Snowflake's native ecosystem to build a modern, cloud-native
 Retail360 follows the Medallion Architecture, a widely adopted design pattern for building scalable and reliable data platforms.
 
 Rather than transforming raw data directly into reports, the pipeline processes information through multiple layers, ensuring data quality, governance, traceability, and historical consistency.
+
+![Architecture Diagram](screenshots/enterprize_architecture.png)
 
 ```text
 

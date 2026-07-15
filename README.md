@@ -2,6 +2,8 @@
 
 Retail360 is an enterprise-scale retail analytics platform built entirely within the **Snowflake Data Cloud**. The platform implements a fully automated Medallion Architecture with continuous data ingestion, enterprise data warehousing, native machine learning, and conversational AI analytics powered by Snowflake Cortex.
 
+
+![Architecture Diagram](screenshots/architecture_diagram.png)
 ---
 
 ## 🌟 Highlights

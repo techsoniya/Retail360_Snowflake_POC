@@ -110,7 +110,7 @@ This repository serves as a showcase for production data engineering patterns, i
 
 ## 📈 Data Flow
 
-![Architecture Diagram](screenshots/data_flow.png)
+![Data_Flow](screenshots/Data_Flow.png)
 
 ```text
 
@@ -173,7 +173,7 @@ Retail360 follows the Medallion Architecture, a widely adopted design pattern fo
 
 Rather than transforming raw data directly into reports, the pipeline processes information through multiple layers, ensuring data quality, governance, traceability, and historical consistency.
 
-![Architecture Diagram](screenshots/enterprize_architecture.png)
+![Enterprize_Architecture](screenshots/Enterprize_Architecture.png)
 
 ```text
 
@@ -347,7 +347,7 @@ Retail360 is built as a fully automated, event-driven data platform where every 
 
 The pipeline applies a structured, layered separation of concerns where each component acts independently, enhancing future code maintainability, data observability, and recovery operations.
 
----
+ ---
 
 ## 📥 Data Ingestion Layer
 

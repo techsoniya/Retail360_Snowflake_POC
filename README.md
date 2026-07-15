@@ -134,17 +134,18 @@ Analytics Marts
 Retail360 leverages Snowflake's native ecosystem to build a modern, cloud-native analytics platform without relying on external orchestration or machine learning frameworks.
 
 ``` text
-Category	Technologies
-Cloud Data Platform	Snowflake
-Programming	SQL, Python
-Data Ingestion	Internal Stages, Snowpipe, File Formats
-Data Processing	Streams, Tasks, Stored Procedures
-Data Warehouse	Star Schema, Fact Tables, Dimension Tables, SCD Type-2
-Analytics	Views, Business Marts
-Machine Learning	Snowflake Cortex Forecasting, Cortex Anomaly Detection
-Artificial Intelligence	Snowflake Cortex Analyst (Natural Language SQL)
-Visualization	Streamlit in Snowflake
-Governance	Reject Framework, Audit Logs, Validation Rules
+| Category | Technologies |
+| :--- | :--- |
+| **Cloud Data Platform** | Snowflake |
+| **Programming** | SQL, Python |
+| **Data Ingestion** | Internal Stages, Snowpipe, File Formats |
+| **Data Processing** | Streams, Tasks, Stored Procedures |
+| **Data Warehouse** | Star Schema, Fact Tables, Dimension Tables, SCD Type-2 |
+| **Analytics** | Views, Business Marts |
+| **Machine Learning** | Snowflake Cortex Forecasting, Cortex Anomaly Detection |
+| **Artificial Intelligence** | Snowflake Cortex Analyst (Natural Language SQL) |
+| **Visualization** | Streamlit in Snowflake |
+| **Governance** | Reject Framework, Audit Logs, Validation Rules |
 ```
 
 ## 🏛 Enterprise Architecture
@@ -214,81 +215,64 @@ Rather than transforming raw data directly into reports, the pipeline processes 
 ```
 
 ## 🏗 Medallion Architecture
+
 ### 🥉 Bronze Layer (RAW)
+The **Raw layer** acts as the immutable landing zone for all incoming retail datasets. Incoming files are continuously loaded into Snowflake using Snowpipe, preserving the original structure and metadata for complete traceability.
 
-The Raw layer acts as the immutable landing zone for all incoming retail datasets.
+#### 🎯 Responsibilities
+* **Continuous Ingestion:** Real-time event-driven data loading.
+* **Metadata Tracking:** Capturing file lineage and arrival timelines.
+* **Source Preservation:** Storing untransformed, raw source states.
+* **Schema Isolation:** Safeguarding downstream environments from schema drift.
+* **Auditability:** Providing a complete historical replay log of raw inputs.
 
-Incoming files are continuously loaded into Snowflake using Snowpipe, preserving the original structure and metadata for complete traceability.
+#### ❄️ Snowflake Components
+* Internal Stages
+* File Formats
+* Snowpipe
+* Transient Tables
 
-#### Responsibilities
-Continuous ingestion
-Metadata tracking
-Source preservation
-Schema isolation
-Auditability
-Snowflake Components
-Internal Stages
-File Formats
-Snowpipe
-Transient Tables
+---
+
 ### 🥈 Silver Layer (CLEAN)
+The **Clean layer** transforms raw business data into trusted datasets through a validation-first approach. Instead of rejecting an entire file because of a few bad records, Retail360 isolates invalid rows into dedicated reject tables while allowing valid records to continue through the pipeline. This approach minimizes data loss while maintaining high data quality.
 
-The Clean layer transforms raw business data into trusted datasets through a validation-first approach.
+#### 🛡️ Validation Framework
+The platform evaluates row-level integrity against the following constraints:
+* **Required Fields & Null Values:** Enforcing mandatory schema completeness.
+* **Data & Date Range Validation:** Detecting corrupted timestamps or logical runtime errors.
+* **Deduplication:** Dropping duplicate business transactions.
+* **Financial Integrity:** Filtering negative sales values, invalid prices, or impossible quantities.
+* **Referential Integrity:** Isolating invalid customer IDs or missing product SKU references.
+* **Business Rules:** Catching complex logical contradictions.
 
-Instead of rejecting an entire file because of a few bad records, Retail360 isolates invalid rows into dedicated reject tables while allowing valid records to continue through the pipeline.
+#### 📦 Pipeline Outputs
+* **✅ Clean Records:** Passed forward to update the core warehouse.
+* **❌ Reject Records:** Diverted to quarantine tables for engineering inspection.
+* **📋 Audit Logs:** Metadata tracking of records processed vs. records failed.
 
-This approach minimizes data loss while maintaining high data quality.
+---
 
-Validation Framework
+### 🥇 Gold Layer (CORE)
+The **Core Warehouse** represents the single source of truth for corporate reporting. Business entities such as customers, products, and stores are modeled using Type-2 Slowly Changing Dimensions (SCD2), allowing the warehouse to preserve historical states over time. Transactional data is stored in optimized fact tables linked directly to these dimensions, enabling accurate point-in-time analytical historical tracking.
 
-#### The platform validates:
+#### 🚀 Features
+* **Historical Tracking:** Point-in-time data logging via active/expired status attributes.
+* **Incremental Processing:** Utilizing efficient `MERGE` statements powered by Snowflake Streams.
+* **Star Schema Modeling:** Highly structured relationship modeling optimized for warehouse scale.
+* **Referential Integrity:** Hard links maintained natively between Fact and Dimension matrices.
+* **Idempotent Loads:** Ensuring repeated pipeline reruns do not generate duplicate rows.
 
-Required fields
-Null values
-Invalid dates
-Duplicate records
-Negative sales values
-Invalid customer IDs
-Product inconsistencies
-Business rule violations
-Outputs
+---
 
-✅ Clean Records
+### 💎 Platinum Layer (ANALYTICS MARTS)
+The final layer exposes curated, business-ready datasets tailored explicitly for executive dashboards, AI applications, and corporate decision support. These downstream marts power customer behavioral loops, product inventory trend analysis, and deep machine learning patterns.
 
-❌ Reject Records
-
-📋 Audit Logs
-
-###🥇 Gold Layer (CORE)
-
-The Core Warehouse represents the trusted source of truth for analytical reporting.
-
-Business entities such as customers, products, and stores are modeled using Type-2 Slowly Changing Dimensions (SCD2), allowing the warehouse to preserve historical changes over time.
-
-Transactional data is stored in optimized fact tables linked to these dimensions, enabling accurate point-in-time reporting.
-
-Features
-Historical tracking
-Incremental MERGE operations
-Star Schema modeling
-Fact & Dimension tables
-Referential integrity
-Idempotent processing
-💎 Platinum Layer (Analytics)
-
-The final layer exposes curated business-ready datasets for dashboards, AI applications, and decision support.
-
-These marts power executive reporting, customer insights, inventory analysis, sales trends, and machine learning models.
-
-Business Views
-Customer 360
-Store Performance
-Product Analytics
-Sales KPIs
-Inventory Insights
-Revenue Trends
-Forecast Results
-Anomaly Reports
+#### 📊 Business Views & Deliverables
+* **Customer 360 & Store Performance:** Complete engagement and regional store vectors.
+* **Product Analytics & Sales KPIs:** Margin mapping, item velocity, and baseline health indicators.
+* **Inventory Insights & Revenue Trends:** Financial optimization frameworks.
+* **Cortex Forecast & Anomaly Outputs:** Predictive modeling surfaces and active alert lists.
 
 ##🔄 End-to-End Pipeline
 
@@ -324,110 +308,100 @@ Analytics Marts
  │
  └────────► Cortex Analyst
 ```
-##⚡ Enterprise Design Principles
+## ⚡ Enterprise Design Principles
 
 Retail360 was built using modern enterprise data engineering practices rather than traditional batch ETL.
 
-###✅ Incremental Processing
+* **✅ Incremental Processing:** Only newly ingested records are processed using Snowflake Streams, drastically reducing unnecessary compute and improving system efficiency.
+* **✅ Idempotent Data Loads:** Strict `MERGE` operations guarantee that rerunning a failed pipeline execution never introduces duplicate records or corrupts destination states.
+* **✅ Historical Data Preservation:** SCD Type-2 dimension tracking maintains a complete audit trail of business evolution, supporting precise point-in-time analytical rollbacks.
+* **✅ Automated Orchestration:** Native Snowflake Tasks coordinate ingestion triggers, continuous validation routines, structural transformations, and analytical layer updates without external reliance.
+* **✅ Data Quality by Design:** A defensive validation architecture isolates corrupted data at the row level into quarantine tables while allowing safe records to proceed uninterrupted, backed by end-to-end metadata logging.
 
-Only newly ingested records are processed using Snowflake Streams, reducing unnecessary compute and improving efficiency.
+---
 
-###✅ Idempotent Data Loads
+## ⚙️ Enterprise Data Pipeline
 
-MERGE operations ensure rerunning the pipeline does not introduce duplicate records.
+Retail360 is built as a fully automated, event-driven data platform where every stage of the pipeline is designed to be modular, scalable, and resilient. Instead of relying on heavy external orchestration software, the platform leverages native Snowflake capabilities to handle ingestion, transformation, validation, orchestration, and intelligence layers.
 
-###✅ Historical Data Preservation
+The pipeline applies a structured, layered separation of concerns where each component acts independently, enhancing future code maintainability, data observability, and recovery operations.
 
-SCD Type-2 dimensions maintain complete business history, supporting accurate point-in-time analysis.
+---
 
-###✅ Automated Orchestration
+## 📥 Data Ingestion Layer
 
-Snowflake Tasks coordinate ingestion, validation, transformation, and analytical refreshes without manual intervention.
+The ingestion layer continuously streams retail datasets into Snowflake while preserving perfect source fidelity. 
 
-### Data Quality by Design
+Incoming corporate datasets arrive at Snowflake Internal Stages in various file structures (including CSV, raw JSON payloads, and Parquet formatting). Snowpipe instantly captures these file drop events via internal stage notifications, automatically appending newly arrived rows into the landing area without manual intervention.
 
-A dedicated validation framework separates trusted business data from rejected records while maintaining comprehensive audit logs.
+### 🎯 Key Responsibilities
+* Continuous file detection and real-time ingestion.
+* Multi-format data processing (CSV, JSON, and Parquet standard support).
+* Dynamic semi-structured schema mapping.
+* Rich metadata capture (Ingest times, source file footprints, row-level positions).
+* Strict source format preservation.
+* Incremental downstream notification logic.
 
-##⚙️ Enterprise Data Pipeline
+### ❄️ Snowflake Components Used
 
-Retail360 is built as a fully automated, event-driven data platform where every stage of the pipeline is designed to be modular, scalable, and resilient. Instead of relying on external orchestration tools, the platform leverages native Snowflake capabilities to manage ingestion, transformation, validation, orchestration, and analytics.
+| Component | Purpose |
+| :--- | :--- |
+| **Internal Stage** | Serves as the secure entry-point landing zone for incoming operational files. |
+| **File Formats** | Contains configuration models to parse unstructured text, JSON key-values, and Parquet data. |
+| **Snowpipe** | Event-driven copy pipes that execute micro-batch table updates on file notification signals. |
+| **Raw Tables** | The immutable target architecture hosting raw bronze-tier source structures. |
 
-The pipeline follows a layered approach where each component has a clearly defined responsibility, enabling maintainability, observability, and reliable data processing.
+---
 
-##📥 Data Ingestion Layer
+## 🌊 Change Data Capture (CDC)
 
-The ingestion layer is responsible for continuously importing retail datasets into Snowflake while preserving source fidelity.
+After data lands in the `RAW` layer, Snowflake Streams automatically track and capture row-level append and modification deltas across the source tables. 
 
-Incoming business data is uploaded to Snowflake Internal Stages in multiple formats including CSV, JSON, and Parquet. Snowpipe continuously monitors these stages and automatically ingests newly arrived files without requiring manual execution.
+Instead of processing the entire historical dataset repeatedly, downstream tasks query the stream to isolate and extract only newly inserted or updated rows. This delta-only engine dramatically limits processing surface area, accelerating query execution times and slashing pipeline operational compute footprints.
 
-###Key Responsibilities
-Continuous file ingestion
-Multi-format file support
-Automatic schema mapping
-Metadata capture
-Source preservation
-Incremental loading
+### 🚀 Benefits
+* **Incremental Processing:** Zero overhead wasted on static historical records.
+* **Optimized Compute footprints:** Substantially lower virtual warehouse utilization metrics.
+* **High Velocity Execution:** Faster data turnaround loops from ingestion to core layers.
+* **Pure Event-Driven Flow:** Real-time alignment with micro-batch data availability.
+* **Deduplication Safeguard:** Natural protection against redundant re-processing operations.
 
-###Snowflake Components Used
+---
+
+## 🧹 Data Quality Framework
+
+A primary mandate of Retail360 is protecting downstream analytics and business intelligence tools from raw operational anomalies and data noise. To achieve this, every captured stream delta passes through a comprehensive programmatic validation engine before entering the warehouse core.
+
+Unlike brittle legacy ETL configurations that abort entire batches or drop complete files due to isolated row errors, Retail360 isolates only the non-compliant records. Pristine transactions continue traversing the pipeline seamlessly, minimizing downstream reporting gaps.
+
+### 🛡️ Core Validation Rules
+The evaluation procedures intercept anomalies across several dimensions:
+* **Structural Completeness:** Checks for null flags inside non-nullable primary target keys.
+* **Type & Format Alignment:** Standardizes incoming strings against rigid timestamp configurations.
+* **Financial Guardrails:** Identifies business logic rule failures (e.g., negative revenue values or invalid transaction quantities).
+* **Reference Testing:** Confirms referenced client, product, and geographic location IDs match active dimensional entities.
+* **Key Uniqueness:** Drops duplicates before entering analytical consolidation matrices.
+
+---
+
+## 🚫 Reject Framework
+
+Invalid data is never silently dropped or ignored. Non-compliant rows are dynamically routed out of the primary ingestion pipeline and safely quarantined into structured reject structures.
+
+This specialized segregation isolates processing failures, allowing engineers and business teams to debug source errors, audit vendor schemas, or correct inputs without causing analytics downtime or data drift.
+
+### 📋 Reject Framework Components
+
+| Component | Purpose |
+| :--- | :--- |
+| **Reject Tables** | Isolated physical structures designed to hold raw non-compliant record rows safely. |
+| **Reject Log** | Central registry indexing historical system error logs and trace patterns. |
+| **Error Messages** | Clear operational metadata detailing the explicit validation constraint that failed. |
+| **Audit Timestamps** | Tracks processing execution time to pinpoint exact pipeline job iterations. |
+
+
+# Example Validation Flow
 ```text
-Component	Purpose
-Internal Stage	Stores incoming retail datasets
-File Formats	Parses CSV, JSON and Parquet files
-Snowpipe	Automatically ingests newly uploaded files
-Raw Tables	Stores immutable source records
-```
-
-##🌊 Change Data Capture (CDC)
-
-After data lands in the RAW layer, Snowflake Streams detect incremental changes made to the source tables.
-
-Instead of processing the entire dataset repeatedly, only newly inserted or modified records are forwarded for validation and transformation. This significantly improves performance and reduces compute costs.
-
-Benefits
-Incremental processing
-Lower warehouse utilization
-Faster execution
-Event-driven architecture
-No duplicate processing
-🧹 Data Quality Framework
-
-One of the core objectives of Retail360 is ensuring that downstream analytics are built on trusted data.
-
-Every incoming record passes through a comprehensive validation framework before entering the warehouse.
-
-Unlike traditional ETL pipelines that reject an entire batch because of a few invalid records, Retail360 isolates only the problematic rows while allowing valid records to continue processing.
-
-This design improves reliability without interrupting business operations.
-
-Validation Rules
-
-The platform validates:
-
-Mandatory field completeness
-Data type consistency
-Date format validation
-Negative revenue detection
-Invalid quantities
-Duplicate business keys
-Missing customer references
-Missing product references
-Invalid status values
-Business rule compliance
-🚫 Reject Framework
-
-Invalid records are never discarded silently.
-
-Instead, every rejected record is redirected into dedicated reject tables together with detailed validation information.
-
-This allows developers and business users to investigate data quality issues without impacting operational reporting.
-
-Reject Framework Components
-Component	Purpose
-Reject Tables	Stores invalid records
-Reject Log	Captures validation errors
-Error Messages	Explains rejection reason
-Audit Timestamp	Tracks processing time
-Example Validation Flow
 Incoming Record
        │
        ▼
@@ -444,30 +418,32 @@ Table      Table
                │
                ▼
         Reject Log
-🔄 Stored Procedure Framework
+```
 
-Business transformations are encapsulated within modular stored procedures.
+## 🔄 Stored Procedure Framework
 
-Each procedure performs a specific responsibility, making the platform easier to maintain, extend, and test.
+Business transformations are encapsulated within highly modular, decoupled stored procedures. Each procedure owns a singular, well-defined operational focus, making the codebase significantly easier to maintain, unit test, and scale over time.
 
-Typical responsibilities include:
+### 🎯 Typical Stored Procedure Responsibilities
+* **Data Validation:** Evaluating inbound stream data against row-level constraints.
+* **Cleansing & Standardization:** Normalizing raw strings, handling variations in timezone timestamps, and parsing dynamic fields.
+* **Dimension & Fact Loading:** Populating operational warehouses with structural entity isolation.
+* **SCD Type-2 Merge Logic:** Executing multi-track history updates on target tables.
+* **Audit Logging:** Emitting tracking payloads detailing batch volume metrics, processing performance, and system errors.
 
-Data validation
-Cleansing
-Standardization
-Dimension loading
-Fact loading
-Merge logic
-Audit logging
+This modular architecture promotes robust code reusability while eliminating long, monolithic script clusters that increase maintenance overhead.
 
-This modular approach promotes code reuse while reducing operational complexity.
+---
 
-⏰ Automated Workflow Orchestration
+## ⏰ Automated Workflow Orchestration
 
-Retail360 uses Snowflake Tasks to automate the complete data pipeline.
+Retail360 utilizes native **Snowflake Tasks** to orchestrate its end-to-end processing pipeline. Rather than introducing external execution dependencies or maintenance footprints, the system implements a serverless, dependency-driven Directed Acyclic Graph (DAG). 
 
-Each task executes only after its upstream dependency has completed successfully, ensuring reliable end-to-end processing.
+Every component evaluates its upstream condition continuously, executing dynamically only when valid new data payloads are detected by the change tracking layer.
 
+
+
+```text
 Snowpipe
      │
      ▼
@@ -487,304 +463,273 @@ Analytics Mart Refresh
      │
      ▼
 ML Refresh
-Advantages
-Fully automated execution
-Dependency management
-Reduced manual intervention
-Consistent refresh cycles
-Reliable scheduling
-🏢 Enterprise Data Warehouse
 
-The Core Warehouse represents the trusted source of truth for analytical reporting.
+```
 
-The warehouse follows a Star Schema design consisting of optimized fact and dimension tables that support high-performance analytical queries.
+### 🚀 Orchestration Advantages
+* **Fully Automated Execution:** Hands-free data pipelines running dynamically based on stream updates.
+* **Deterministic Dependency Management:** Enforces structural execution sequencing natively.
+* **Reduced Manual Intervention:** Eliminates human runtime triggers and administrative maintenance overhead.
+* **Consistent Refresh Cycles:** Ensures operational reporting matches file delivery frequency.
+* **Reliable Scheduling:** Native scheduling engines run reliably within the Snowflake compute boundary.
 
-Dimension Tables
+---
 
-Examples include:
+## 🏢 Enterprise Data Warehouse
 
-Customer
-Product
-Store
-Date
-Employee
+The **Core Warehouse** acts as the definitive, centralized source of truth for downstream business intelligence. The physical models leverage an optimized **Star Schema** architecture composed of highly performant fact and dimension tables tailored to scale under heavy corporate analytical workloads.
 
-These dimensions preserve historical business changes using Type-2 Slowly Changing Dimensions.
+### 📐 Dimension Tables
+Dimensions represent the context surrounding business activities. Examples implemented include:
+* `DIM_CUSTOMER`
+* `DIM_PRODUCT`
+* `DIM_STORE`
+* `DIM_DATE`
+* `DIM_EMPLOYEE`
 
-Fact Tables
+*These dimensions preserve historical business status updates over time using Type-2 Slowly Changing Dimensions (SCD2).*
 
-Fact tables capture measurable business events such as:
+### 📊 Fact Tables
+Fact tables store the quantitative, measurable events emitted by operational storefront systems:
+* `FACT_SALES`
+* `FACT_ORDERS`
+* `FACT_INVENTORY_LEVELS`
+* `FACT_TRANSACTIONS`
 
-Sales
-Orders
-Revenue
-Inventory
-Transactions
+Each transaction row references the surrounding dimension tables using integrity-matched keys, creating a reliable, highly performant dimensional cross-join framework.
 
-Each fact record references dimension tables, enabling consistent analytical reporting.
+---
 
-📜 Type-2 Slowly Changing Dimensions (SCD2)
+## 📜 Type-2 Slowly Changing Dimensions (SCD2)
 
-Retail360 maintains historical versions of dimensional entities using the SCD Type-2 methodology.
+Retail360 prevents data drift and historical distortion by using Type-2 Slowly Changing Dimensions. Instead of destructive table overwrites when an entity profile evolves, the pipeline preserves history by versioning the entry with explicit validity tracking columns.
 
-Rather than overwriting records, changes create new versions while preserving historical information.
+### 💡 Example State Tracking
+If a client relocates their primary residential address, the data reflects the progression seamlessly:
 
-For example:
+| CUSTOMER_ID | CUSTOMER_NAME | CITY | IS_CURRENT | START_DATE | END_DATE |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| `C-1002` | Alice | Bangalore | **No** | 2025-01-01 | 2026-03-14 |
+| `C-1002` | Alice | Mumbai | **Yes** | 2026-03-14 | `NULL` |
 
-Customer	City	Current
-Alice	Bangalore	No
-Alice	Mumbai	Yes
+### 🚀 Key Benefits
+* **Historical Accuracy:** Retroactive reporting correctly attributes old revenue metrics to Bangalore and new activity to Mumbai.
+* **Data Auditability:** Transparent lineage showing exactly how records evolved over historical milestones.
+* **Time-Travel Analytics:** Simplifies point-in-time point queries for financial compliance reviews.
 
-This enables accurate point-in-time reporting and trend analysis.
+---
 
-Benefits
-Historical tracking
-Auditability
-Business lineage
-Time-travel analytics
-Regulatory compliance
-📊 Analytics Layer
+## 📊 Analytics Layer
 
-The Analytics Layer transforms curated warehouse data into business-friendly marts designed for reporting, dashboards, and AI applications.
+The **Analytics Layer** abstracts the core warehouse data structures into highly optimized, business-friendly data marts. These views filter structural complexity out of basic operations, providing flat, hyper-performant datasets for analytics teams and predictive models alike.
 
-Example analytical domains include:
+### 🎯 Key Analytical Domains
+* **Customer 360:** Consolidates behavioral loops, lifetime value (LTV), and frequency matrices.
+* **Store & Product Performance:** Tracks regional operational efficiency and inventory SKU velocity.
+* **Sales Intelligence & Revenue Analysis:** Surfaces real-time margin changes and high-level KPIs.
+* **Inventory Monitoring:** Highlights stock drift patterns to prevent costly out-of-stock events.
 
-Customer 360
-Store Performance
-Product Performance
-Sales Trends
-Revenue Analysis
-Inventory Monitoring
-Regional Insights
+---
 
-These marts provide optimized datasets for both business users and machine learning models.
+## 🤖 Machine Learning with Snowflake Cortex
 
-🤖 Machine Learning with Snowflake Cortex
+Retail360 breaks away from standard legacy batch processing by integrating advanced ML operations natively inside the pipeline using **Snowflake Cortex ML Functions**. This setup keeps data inside the secure data cloud border, avoiding external data movement and server maintenance costs.
 
-Retail360 extends traditional analytics with native machine learning using Snowflake Cortex.
+### 📈 Demand Forecasting
+The system builds time-series models on top of historical sales lines to output predictive consumption horizons.
+* **Operational Value:** Automatically handles seasonality, trends, and missing data points.
+* **Use Cases:** Optimizes seasonal inventory orders and helps allocate warehouse resources efficiently.
 
-The platform applies forecasting and anomaly detection directly within Snowflake, eliminating the need to export data into external ML environments.
+### 🔍 Anomaly Detection
+Unsupervised machine learning algorithms monitor streaming operational metrics in real-time to isolate statistical exceptions.
+* **Actionable Alerts:** Catches sudden drops in revenue, unexplained pricing discrepancies, or unusual inventory changes.
+* **Proactive Decision-Making:** Alerts management to potential security concerns or supply chain disruptions instantly.
 
-Forecasting
+---
 
-Historical sales trends are analyzed to generate future demand predictions.
+## 📈 Business Intelligence Layer
 
-Forecast outputs help business teams anticipate demand, optimize inventory, and support operational planning.
+Insights are made available to stakeholders through two custom interactive applications built using **Streamlit in Snowflake (SiS)**.
 
-Example Use Cases
-Sales forecasting
-Inventory planning
-Revenue projections
-Seasonal demand analysis
-Anomaly Detection
+### 📊 Retail360 AI Control Tower
+A central executive dashboard offering interactive filtering and real-time visual insights:
+* **Executive Dashboards:** High-level summaries of primary organizational health metrics.
+* **Predictive Visuals:** Clear graphs showing machine learning demand forecasts alongside anomaly alert markers.
+* **Granular Drill-Downs:** Easily breaks down performance data by specific products, dates, or retail locations.
 
-The platform continuously evaluates operational metrics to identify unusual behavior.
+### 💬 Ask Retail360 (Conversational AI)
+An interactive natural language interface powered by **Snowflake Cortex Analyst**. It lets non-technical business users run complex database queries using plain conversational text instead of writing code.
 
-Detected anomalies may indicate:
+*   *"Which store generated the highest revenue last month?"*
+*   *"Show me the top 10 products by profit margin."*
+*   *"Forecast next month's sales for our primary storefronts."*
 
-Unexpected sales spikes
-Revenue drops
-Inventory shortages
-Operational issues
-Promotional impacts
+```text
+ [ Natural Language Prompt ] ──► [ Cortex Analyst Semantic Model ] ──► [ Validated SQL Auto-Gen ]
+                                                                                │
+ [ Rich Interactive Chart ] ◄─── [ Governed Result Payload ] ◄──────────────────┘
 
-These insights enable proactive business decision-making.
+```
 
-📈 Business Intelligence Layer
+```text?code_stdout&code_event_index=1
+## 🎯 Engineering Principles
 
-Retail360 delivers insights through two interactive Streamlit applications deployed directly inside Snowflake.
+Retail360 is engineered around production-grade data architecture patterns rather than simple tool demonstrations. The platform enforces rigid engineering standards to ensure real-world scalability, reliability, and cost efficiency.
 
-📊 Retail360 AI Control Tower
+*   **🧱 Modular Architecture:** Strict separation of data life cycles across clear logical interfaces (Raw → Clean → Core → Mart).
+*   **⚙️ Separation of Concerns:** Isolation of compute footprints where ingestion, validation frameworks, structural warehousing, and analytical models execute independently.
+*   **🌊 Event-Driven Ingestion:** Eliminates legacy cron-scheduled architectures, triggering data movements instantly on file discovery signals.
+*   **⚡ Incremental Data Movement:** Leverages Change Data Capture (CDC) offsets to minimize database scan volume and compute spend.
+*   **⏰ Automated Native Orchestration:** Serverless DAG workflows managed entirely within the data cloud boundary, reducing network hops and external security vectors.
+*   **📜 Historical Data Preservation:** Point-in-time state tracking using SCD Type-2 dimensions to safeguard analytical reproducibility.
+*   **🛡️ Comprehensive Fault-Tolerant Validation:** Stream-level evaluation isolating corrupt records at the row level without pausing overall data pipelines.
+*   **📐 Optimized Warehouse Design:** High-performance Star Schema architectures equipped with analytical views built for rapid execution.
+*   **🤖 Native AI Integration:** Brings predictive machine learning and natural language translation directly to the data layer.
+*   **🛡️ Enterprise Governance & Guardrails:** Robust Role-Based Access Control (RBAC) schemas coupled with dynamic error logging frameworks.
 
-The AI Control Tower provides executives with a centralized operational dashboard.
+---
 
-Features
-Executive KPIs
-Sales trends
-Revenue monitoring
-Demand forecasting
-Anomaly visualization
-Customer metrics
-Store performance
-Interactive filtering
-💬 Ask Retail360
+## 📂 Repository Structure
 
-Ask Retail360 is a conversational analytics interface powered by Snowflake Cortex Analyst.
-
-Instead of writing SQL, users can ask business questions in natural language.
-
-Example questions:
-
-"Which store generated the highest revenue last month?"
-
-"Show me the top 10 products by profit."
-
-"Forecast next month's sales."
-
-Cortex Analyst translates these requests into SQL while enforcing governance policies and preventing unauthorized access to sensitive data.
-
-🎯 Engineering Principles
-
-Retail360 was designed around production-ready engineering practices rather than simply demonstrating Snowflake features.
-
-The platform emphasizes:
-
-Modular architecture
-Separation of concerns
-Event-driven processing
-Incremental data movement
-Automated orchestration
-Historical data preservation
-Comprehensive validation
-Scalable warehouse design
-Native AI integration
-Enterprise governance
-
-📂 Repository Structure
+````text
 retail360/
 │
-├── README.md
-├── LICENSE
-├── .gitignore
+├── README.md                          # Platform documentation
+├── LICENSE                            # License provisions
+├── .gitignore                         # Git ignore configuration
 │
 ├── sql/
 │   ├── 01_setup/
-│   │   ├── databases.sql
-│   │   ├── warehouses.sql
-│   │   ├── schemas.sql
-│   │   └── roles.sql
+│   │   ├── databases.sql             # Database & environment initialization
+│   │   ├── warehouses.sql            # Virtual compute layer scaling parameters
+│   │   ├── schemas.sql               # Medallion layer boundaries
+│   │   └── roles.sql                 # RBAC matrix foundations
 │   │
 │   ├── 02_ingestion/
-│   │   ├── stages.sql
-│   │   ├── file_formats.sql
-│   │   ├── raw_tables.sql
-│   │   └── snowpipes.sql
+│   │   ├── stages.sql                # Secure internal file storage areas
+│   │   ├── file_formats.sql          # Structured parsers (CSV, JSON, Parquet)
+│   │   ├── raw_tables.sql            # Immutable Bronze landing infrastructure
+│   │   └── snowpipes.sql             # Real-time event-driven auto-copy pipes
 │   │
 │   ├── 03_clean/
-│   │   ├── streams.sql
-│   │   ├── validation_procedures.sql
-│   │   ├── reject_framework.sql
-│   │   └── clean_tables.sql
+│   │   ├── streams.sql               # CDC delta offsets on raw tables
+│   │   ├── validation_procedures.sql # Row-level validation code blocks
+│   │   ├── reject_framework.sql      # Quarantine tables and audit registries
+│   │   └── clean_tables.sql          # Verified Silver storage matrices
 │   │
 │   ├── 04_core/
-│   │   ├── dimensions.sql
-│   │   ├── facts.sql
-│   │   ├── scd2_merge.sql
-│   │   └── warehouse_views.sql
+│   │   ├── dimensions.sql            # Master dimension table configurations
+│   │   ├── facts.sql                 # Transactional metric hub schemas
+│   │   ├── scd2_merge.sql            # SCD Type-2 history tracking rules
+│   │   └── warehouse_views.sql       # Golden relational source abstractions
 │   │
 │   ├── 05_tasks/
-│   │   ├── orchestration.sql
-│   │   └── task_dependencies.sql
+│   │   ├── orchestration.sql         # Serverless pipeline schedule models
+│   │   └── task_dependencies.sql     # Directed Acyclic Graph (DAG) structures
 │   │
 │   ├── 06_marts/
-│   │   ├── customer360.sql
-│   │   ├── sales_dashboard.sql
-│   │   └── executive_views.sql
+│   │   ├── customer360.sql           # Aggregated client engagement arrays
+│   │   ├── sales_dashboard.sql       # Structured analytics tables
+│   │   └── executive_views.sql       # Unified company KPI dashboards
 │   │
 │   └── 07_cortex_ml/
-│       ├── forecasting.sql
-│       ├── anomaly_detection.sql
-│       └── cortex_analyst.yaml
+│       ├── forecasting.sql           # Native time-series predictive modeling
+│       ├── anomaly_detection.sql     # Unsupervised exception tracking systems
+│       └── cortex_analyst.yaml       # GenAI Text-to-SQL semantic definition
 │
 ├── streamlit/
-│   ├── ai_control_tower.py
-│   └── ask_retail360.py
+│   ├── ai_control_tower.py           # Streamlit application for executive dashboards
+│   └── ask_retail360.py              # Natural language interactive interface
 │
-├── screenshots/
-│
-├── architecture/
-│
-└── assets/
-🚀 Getting Started
-Prerequisites
+├── screenshots/                       # Visual application interface files
+├── architecture/                     # Systems diagram assets
+└── assets/                           # Miscellaneous repository resources
 
+```
+
+## 🚀 Getting Started
+
+### 📋 Prerequisites
 Before deploying Retail360, ensure you have access to:
+*   **Snowflake Account:** Active account access.
+*   **Privileges:** `ACCOUNTADMIN` or equivalent administrative privileges.
+*   **Streamlit in Snowflake:** Feature enabled inside your targeted zone.
+*   **Snowflake Cortex:** Platform features enabled.
+*   **Cortex Analyst:** Feature enabled for natural language translation.
+*   **Snowflake ML Functions:** Enabled for native predictive operations.
+*   **Virtual Compute:** A virtual warehouse equipped with sufficient compute resources.
 
-Snowflake Account
-ACCOUNTADMIN or equivalent administrative privileges
-Streamlit in Snowflake enabled
-Snowflake Cortex enabled
-Cortex Analyst enabled
-Snowflake ML functions enabled
-A virtual warehouse with sufficient compute resources
-⚙️ Deployment Guide
+---
+
+## ⚙️ Deployment Guide
 
 The project is designed for modular deployment. Execute the SQL scripts sequentially to provision infrastructure, configure ingestion, build the warehouse, and deploy analytical applications.
 
-Step 1 — Provision Infrastructure
-Run:
-sql/01_setup/
+### 🏁 Step-by-Step Execution Sequence
 
-This creates:
+#### **Step 1 — Provision Infrastructure**
+*   **Run:** `sql/01_setup/`
+*   **This creates:**
+    *   Database
+    *   Schemas
+    *   Warehouses
+    *   Roles
+    *   Grants
 
-Database
-Schemas
-Warehouses
-Roles
-Grants
-Step 2 — Configure Data Ingestion
-Run:
-sql/02_ingestion/
+#### **Step 2 — Configure Data Ingestion**
+*   **Run:** `sql/02_ingestion/`
+*   **This provisions:**
+    *   Internal Stages
+    *   File Formats
+    *   Raw Tables
+    *   Snowpipes
 
-This provisions:
+#### **Step 3 — Deploy Validation Layer**
+*   **Run:** `sql/03_clean/`
+*   **This creates:**
+    *   Streams
+    *   Validation Procedures
+    *   Reject Tables
+    *   Clean Tables
 
-Internal Stages
-File Formats
-Raw Tables
-Snowpipes
-Step 3 — Deploy Validation Layer
-Run:
-sql/03_clean/
+#### **Step 4 — Build Warehouse**
+*   **Run:** `sql/04_core/`
+*   **This creates:**
+    *   Dimension Tables
+    *   Fact Tables
+    *   SCD Type-2 Merge Logic
 
-This creates:
+#### **Step 5 — Enable Automation**
+*   **Run:** `sql/05_tasks/`
+*   **This creates:**
+    *   Scheduled Tasks
+    *   Dependency Chain
 
-Streams
-Validation Procedures
-Reject Tables
-Clean Tables
-Step 4 — Build Warehouse
-Run:
-sql/04_core/
+#### **Step 6 — Build Business Marts**
+*   **Run:** `sql/06_marts/`
+*   **This creates:**
+    *   Customer 360
+    *   Store Analytics
+    *   Sales Dashboard
+    *   Executive Views
 
-Creates:
+#### **Step 7 — Deploy AI Layer**
+*   **Run:** `sql/07_cortex_ml/`
+*   **This creates:**
+    *   Forecast Models
+    *   Anomaly Detection Models
+    *   Cortex Analyst Semantic Model
 
-Dimension Tables
-Fact Tables
-SCD Type-2 Merge Logic
-Step 5 — Enable Automation
-Run:
-sql/05_tasks/
+#### **Step 8 — Deploy Streamlit Apps**
+Deploy the following applications inside Snowflake using the matching application scripts from the repository:
+*   **AI Control Tower** (`streamlit/ai_control_tower.py`)
+*   **Ask Retail360** (`streamlit/ask_retail360.py`)
 
-Creates:
-
-Scheduled Tasks
-Dependency Chain
-Step 6 — Build Business Marts
-Run:
-sql/06_marts/
-
-Creates:
-
-Customer 360
-Store Analytics
-Sales Dashboard
-Executive Views
-Step 7 — Deploy AI Layer
-Run:
-sql/07_cortex_ml/
-
-Creates
-
-Forecast Models
-Anomaly Detection Models
-Cortex Analyst Semantic Model
-Step 8 — Deploy Streamlit Apps
-
-Deploy the following applications inside Snowflake:
-
-AI Control Tower
-Ask Retail360
-🔄 Pipeline Execution Flow
+  
+## AI Control Tower
+### Ask Retail360
+#### 🔄 Pipeline Execution Flow
+```text
 Upload Data
      │
      ▼
@@ -813,125 +758,114 @@ Machine Learning
      │
      ▼
 Streamlit Applications
-📊 Monitoring & Observability
+```
 
-Retail360 includes several mechanisms to monitor platform health and ensure reliable pipeline execution.
+## 📊 Monitoring & Observability
 
-Pipeline Monitoring
-Snowpipe ingestion status
-Stream processing
-Task execution history
-Warehouse utilization
-Data freshness
-Validation metrics
-Audit Framework
+Retail360 includes robust built-in tracking mechanisms to monitor platform health, optimize compute usage, and ensure reliable end-to-end pipeline execution.
 
-Each execution cycle captures operational metadata, including:
+### 🔍 Pipeline Monitoring
+The health of the data flow is evaluated across multiple metrics:
+*   **Snowpipe Ingestion Status:** Tracking raw copy pipe queues and load success rates.
+*   **Stream Processing Velocity:** Monitoring outstanding rows and transformation delta processing windows.
+*   **Task Execution History:** Deep graph auditing using Snowflake’s `TASK_HISTORY` table function to track structural run times.
+*   **Warehouse Utilization:** Correlating compute power spikes against explicit pipeline loads to ensure cost-efficiency.
+*   **Data Freshness & Validation Metrics:** Measuring historical processing gaps alongside target data consistency limits.
 
-Load timestamp
-Source file
-Records received
-Records processed
-Records rejected
-Records loaded
-Pipeline status
+### 📋 Centralized Audit Framework
+Each execution loop captures granular runtime operational metadata into historical logging targets:
+*   `LOAD_TIMESTAMP` — Exact date and runtime window of the process.
+*   `SOURCE_FILE` — Footprint signature pointing to the ingested source asset.
+*   `RECORDS_RECEIVED` — Complete bulk row count landed at the Bronze stage.
+*   `RECORDS_PROCESSED` — Total elements passed through structural testing.
+*   `RECORDS_REJECTED` — Row counts failed and diverted into the quarantine framework.
+*   `RECORDS_LOADED` — Count of successful items appended to core tables.
+*   `PIPELINE_STATUS` — Overall state flags (`SUCCESS`, `PARTIAL_FAILURE`, `CRITICAL_ERROR`).
 
-These audit records provide traceability and simplify troubleshooting.
+*These detailed audit records offer reliable end-to-end data lineage and make troubleshooting fast and simple.*
 
-🛡️ Security & Governance
+---
 
-Retail360 incorporates governance practices to protect sensitive business data and ensure controlled access.
+## 🛡️ Security & Governance
 
-Security Features
-Role-Based Access Control (RBAC)
-Principle of Least Privilege
-Secure Views
-Controlled Streamlit Access
-Cortex Analyst Guardrails
-Audit Logging
-Data Validation
-Historical Tracking
-✅ Data Quality Assurance
+Retail360 implements corporate-grade data security protocols designed to safeguard sensitive business metrics while ensuring frictionless exploration interfaces.
 
-The platform enforces quality controls throughout the pipeline.
+*   **Role-Based Access Control (RBAC):** Access privileges are bound strict to specific functional needs (`ANALYST_ROLE`, `ENGINEER_ROLE`, `SYSADMIN_ROLE`), decoupling data manipulation tasks from administrative tasks.
+*   **Principle of Least Privilege:** Fine-grained operational constraints ensuring structural components only access dependencies required for their explicit task.
+*   **Secure Views:** Analytical business layers strip away primary database joins and mask direct internal table queries from unauthorized extraction tools.
+*   **Controlled Streamlit Access:** Restricts operational dashboard interaction solely to certified user profiles within the Snowflake tenant perimeter.
+*   **Cortex Analyst Guardrails:** Semantic YAML rules block non-approved column names, prevent SQL injection attempts, and restrict unauthorized database exposure.
+*   **Continuous Compliance Logging:** Unalterable record capture via systematic audit tracking, automated error rules, and historical dimension structures.
 
-Validation includes:
+---
 
-Mandatory fields
-Duplicate detection
-Invalid business rules
-Null handling
-Referential integrity
-Numeric validation
-Date validation
-Status validation
+## ✅ Data Quality Assurance
 
-Rather than discarding invalid records, the platform isolates them for review while allowing trusted records to continue through the pipeline.
+The platform enforces quality controls throughout the pipeline using a strict validation engine. Rather than dropping entire data batches when errors occur, it isolates corrupted lines for engineering analysis while letting clean records proceed uninterrupted.
 
-⚡ Performance Optimizations
+### 🛠️ Core Validation Routines
+*   **Mandatory Fields & Null Handling:** Confirms essential key columns are complete.
+*   **Duplicate Detection:** Identifies and cleans out redundant operational transactions.
+*   **Business Rules Compliance:** Flags invalid metrics, such as negative revenues or inverted logic conditions.
+*   **Referential Integrity:** Validates foreign keys to ensure all events map to existing dimensions.
+*   **Data Type & Format Checks:** Standardizes numbers and maps uneven date formats into universal timestamps.
 
-Retail360 is optimized for scalable analytical workloads.
+---
 
-Key optimizations include:
+## ⚡ Performance Optimizations
 
-Incremental processing using Streams
-Automated Snowpipe ingestion
-MERGE-based loading
-Warehouse partitioning
-Task dependency orchestration
-Optimized analytical views
-Native Cortex execution
-Reduced compute through change data capture
-📚 Learning Outcomes
+Retail360 is optimized from the ground up to support highly scalable analytical workloads with minimal compute overhead.
 
-This project demonstrates practical experience with:
+*   **Incremental CDC Processing:** Employs Snowflake Streams to process only newly arrived delta rows, avoiding costly scans of static historical data.
+*   **Event-Driven Auto-Ingest:** Uses Snowpipe micro-batches to distribute compute overhead evenly, replacing heavy, resource-intensive legacy batch loads.
+*   **Idempotent MERGE Loads:** Prevents data duplication during pipeline reruns by applying fast, matching column updates.
+*   **Warehouse Partitioning:** Leverages Snowflake’s natural micro-clustering to keep analytical processing efficient at scale.
+*   **Orchestration Dependencies:** Connects serverless tasks in a clean DAG structure, suspending compute warehouses instantly when workloads finish.
 
-Enterprise Data Engineering
-Snowflake Architecture
-Medallion Data Modeling
-Change Data Capture
-Data Quality Engineering
-Data Warehousing
-Incremental ETL/ELT
-Type-2 Slowly Changing Dimensions
-Snowflake Cortex
-Machine Learning
-Business Intelligence
-Streamlit in Snowflake
-Cloud-native Analytics
-AI-powered Data Discovery
-🔮 Future Enhancements
+---
 
-Potential future improvements include:
+## 📚 Learning Outcomes
 
-Real-time streaming ingestion with Kafka
-Snowpark Python feature engineering
-dbt integration for transformation management
-CI/CD deployment with GitHub Actions
-Infrastructure as Code using Terraform
-Automated data quality dashboards
-Data lineage visualization
-Cost optimization dashboards
-Iceberg Tables support
-Multi-region deployment
-Containerized API integrations
-🤝 Contributing
+Building this platform provides practical, production-level engineering experience across several core areas:
+*   **Enterprise Data Engineering:** Designing robust data pipelines using cloud-native patterns.
+*   **Snowflake Architecture:** Maximizing credit efficiency across stages, tasks, pipes, and virtual warehouses.
+*   **Medallion Data Modeling:** Isolating data stages logically into distinct Raw, Clean, Core, and Mart layers.
+*   **Change Data Capture (CDC):** Tracking row-level incremental changes via Snowflake Streams.
+*   **Data Quality Engineering:** Designing row-isolated validation rules and audit logs.
+*   **Advanced Warehouse Modeling:** Managing history with point-in-time Type-2 Slowly Changing Dimensions (SCD2).
+*   **Native AI/ML Applications:** Using Snowflake Cortex for out-of-the-box forecasting, anomaly detection, and Text-to-SQL analytics.
+*   **Business Intelligence App Deployment:** Building secure front-end applications directly inside the data cloud using Streamlit.
 
-Contributions, feature requests, and suggestions are welcome.
+---
 
-If you'd like to contribute:
+## 🔮 Future Enhancements
 
-Fork the repository.
-Create a feature branch.
-Commit your changes with clear commit messages.
-Open a pull request describing your changes.
+Planned upgrades to extend the capabilities of the platform include:
+*   [ ] **Real-Time Ingestion:** Connecting Apache Kafka or Snowflake Streaming endpoints for live clickstream processing.
+*   [ ] **Snowpark Feature Engineering:** Building advanced machine learning data prep routines using Snowpark Python.
+*   [ ] **dbt Cloud Integration:** Migrating core transformations to dbt to explore alternate deployment patterns.
+*   [ ] **CI/CD Pipelines:** Setting up automated infrastructure deployment using GitHub Actions and Terraform providers.
+*   [ ] **Data Lineage Dashboards:** Creating visual monitoring tools to track data flow health and cost metrics.
+*   [ ] **Apache Iceberg Support:** Testing external open-table storage formats within Snowflake.
 
-Please ensure all SQL scripts follow the project's naming conventions and maintain compatibility with the existing architecture.
+---
 
-👩‍💻 Author
+## 🤝 Contributing
 
-Soniya Kambli
+Contributions, feature requests, and architecture suggestions are welcome! To contribute:
 
-Data Engineer | Snowflake Enthusiast | AI & Analytics Engineer
+1. Fork the repository.
+2. Create your feature branch (`git checkout -b feature/amazing-improvement`).
+3. Commit your updates with clear, descriptive messages (`git commit -m 'Add automated data quality check'`).
+4. Open a Pull Request detailing your changes against the main branch.
 
-If you found this project interesting or helpful, consider giving it a ⭐ to support the repository.
+*Please ensure all new SQL scripts follow the project's UPPERCASE naming conventions and maintain strict compatibility with the existing medallion schema architecture.*
+
+---
+
+## 👩‍💻 Author
+
+**Soniya Kambli**
+*Data Engineer | Snowflake Enthusiast | AI & Analytics Engineer*
+
+*If you found this architecture design framework helpful or interesting, please consider dropping a ⭐ to support the repository!*

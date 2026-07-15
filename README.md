@@ -34,7 +34,8 @@ This repository serves as a showcase for production data engineering patterns, i
 ---
 
 ## 🏆 Key Platform Capabilities
-```text
+
+
 | Category | Capability | Snowflake Implementation Component |
 | :--- | :--- | :--- |
 | **Data Ingestion** | Continuous, multi-format file processing | Internal Stages, File Formats, Snowpipe |
@@ -45,7 +46,7 @@ This repository serves as a showcase for production data engineering patterns, i
 | **Machine Learning** | Out-of-the-box forecasting & anomaly tracking | Cortex Forecast & Anomaly Detection |
 | **Generative AI** | Governed natural language analytics | Cortex Analyst (YAML Semantic Model) |
 | **Visualization** | Interactive executive interfaces | Streamlit in Snowflake (SiS) |
-```
+
 ---
 
 ## 📊 Architecture & Data Flow
@@ -133,7 +134,7 @@ Analytics Marts
 
 Retail360 leverages Snowflake's native ecosystem to build a modern, cloud-native analytics platform without relying on external orchestration or machine learning frameworks.
 
-``` text
+
 | Category | Technologies |
 | :--- | :--- |
 | **Cloud Data Platform** | Snowflake |
@@ -146,7 +147,7 @@ Retail360 leverages Snowflake's native ecosystem to build a modern, cloud-native
 | **Artificial Intelligence** | Snowflake Cortex Analyst (Natural Language SQL) |
 | **Visualization** | Streamlit in Snowflake |
 | **Governance** | Reject Framework, Audit Logs, Validation Rules |
-```
+
 
 ## 🏛 Enterprise Architecture
 

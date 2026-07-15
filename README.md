@@ -594,57 +594,38 @@ Retail360 is engineered around production-grade data architecture patterns rathe
 ````text
 retail360/
 │
-├── README.md                          # Platform documentation
-├── LICENSE                            # License provisions
-├── .gitignore                         # Git ignore configuration
+├── README.md                                  # Platform overview & setup
+├── LICENSE                                    # Project license guidelines
+├── .gitignore                                 # Git exclusions matrix
 │
 ├── sql/
-│   ├── 01_setup/
-│   │   ├── databases.sql             # Database & environment initialization
-│   │   ├── warehouses.sql            # Virtual compute layer scaling parameters
-│   │   ├── schemas.sql               # Medallion layer boundaries
-│   │   └── roles.sql                 # RBAC matrix foundations
+│   ├── 1_Database_and _schemas.sql            # Base DB & layout schemas setup[cite: 11]
+│   ├── 2_Warehouses.sql                       # Virtual scaling warehouse configs[cite: 10]
+│   ├── 3_FileFormats.sql                      # CSV, JSON, Parquet standard parsers[cite: 9]
+│   ├── 4_Named_Internal_Stages.sql            # File repository ingestion targets[cite: 8]
+│   ├── 5_Audit_Layer.sql                      # Registry & load tracking engines[cite: 7]
+│   ├── 6_Raw_Tables.sql                       # Transient tables & Raw Reject Logs[cite: 6]
+│   ├── 7_clean_tables.sql                     # Verified Silver targets & Rejects[cite: 5]
+│   ├── 8_Streams_On_Raw.sql                   # Delta change listeners on landing rows[cite: 4]
+│   ├── 9_copy_Pipe.sql                        # Snowpipe automation definitions[cite: 2]
 │   │
-│   ├── 02_ingestion/
-│   │   ├── stages.sql                # Secure internal file storage areas
-│   │   ├── file_formats.sql          # Structured parsers (CSV, JSON, Parquet)
-│   │   ├── raw_tables.sql            # Immutable Bronze landing infrastructure
-│   │   └── snowpipes.sql             # Real-time event-driven auto-copy pipes
-│   │
-│   ├── 03_clean/
-│   │   ├── streams.sql               # CDC delta offsets on raw tables
-│   │   ├── validation_procedures.sql # Row-level validation code blocks
-│   │   ├── reject_framework.sql      # Quarantine tables and audit registries
-│   │   └── clean_tables.sql          # Verified Silver storage matrices
-│   │
-│   ├── 04_core/
-│   │   ├── dimensions.sql            # Master dimension table configurations
-│   │   ├── facts.sql                 # Transactional metric hub schemas
-│   │   ├── scd2_merge.sql            # SCD Type-2 history tracking rules
-│   │   └── warehouse_views.sql       # Golden relational source abstractions
-│   │
-│   ├── 05_tasks/
-│   │   ├── orchestration.sql         # Serverless pipeline schedule models
-│   │   └── task_dependencies.sql     # Directed Acyclic Graph (DAG) structures
-│   │
-│   ├── 06_marts/
-│   │   ├── customer360.sql           # Aggregated client engagement arrays
-│   │   ├── sales_dashboard.sql       # Structured analytics tables
-│   │   └── executive_views.sql       # Unified company KPI dashboards
-│   │
-│   └── 07_cortex_ml/
-│       ├── forecasting.sql           # Native time-series predictive modeling
-│       ├── anomaly_detection.sql     # Unsupervised exception tracking systems
-│       └── cortex_analyst.yaml       # GenAI Text-to-SQL semantic definition
+│   ├── 14_Mart_Layer_Views.sql                # Analytical views & Master KPI marts[cite: 14]
+│   ├── 16_Clean_To_Core_Tasks.sql             # Silver-to-Gold change tasks[cite: 16]
+│   ├── 17_Core_SCD2_Stored_Procedures.sql     # Customer, SKU, & Store history engines[cite: 17]
+│   ├── 18_Raw_To_Clean_Tasks.sql              # Ingestion task management DAG[cite: 18]
+│   ├── 19_Raw_Stream_To_Clean_Procedures.sql  # Row quality checks and quarantine code[cite: 19]
+│   ├── 20_Core_Tables_DDL.sql                 # Warehouse relational schemas[cite: 20]
+│   └── 21_Pipe_Refresh_Automation.sql         # Manual pipe syncs & route controls[cite: 21]
+│
+├── cdc_json/                                  # Semi-structured change events
+├── customer_parquet/                          # Structured client datasets
+├── sales_csv/                                 # Storefront transactional flat files
 │
 ├── streamlit/
-│   ├── ai_control_tower.py           # Streamlit application for executive dashboards
-│   └── ask_retail360.py              # Natural language interactive interface
+│   ├── ai_control_tower.py                    # SiS Operations KPI application[cite: 12, 13]
+│   └── ask_retail360.py                       # Conversational Cortex chat assistant[cite: 12]
 │
-├── screenshots/                       # Visual application interface files
-├── architecture/                     # Systems diagram assets
-└── assets/                           # Miscellaneous repository resources
-
+└── screenshots/                               # Interface presentation files
 
 ````
 

@@ -4,7 +4,11 @@ Retail360 is an enterprise-scale retail analytics platform built entirely within
 
 
 ![Architecture Diagram](screenshots/architecture_diagram.png)
+
+[![Watch the Platform Demo](https://raw.githubusercontent.com/DenverCoder1/github-readme-youtube-cards/main/assets/default.png)](https://drive.google.com/file/d/1DehTzIUXg6SS6ltsXhV8JG5OP1w0JKOA/view?usp=drive_link)
 ---
+
+
 
 ## 🌟 Highlights
 

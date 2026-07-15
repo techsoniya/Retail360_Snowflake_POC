@@ -594,38 +594,35 @@ Retail360 is engineered around production-grade data architecture patterns rathe
 ````text
 retail360/
 │
-├── README.md                                  # Platform overview & setup
-├── LICENSE                                    # Project license guidelines
-├── .gitignore                                 # Git exclusions matrix
+├── README.md                                    # Platform overview & documentation
+├── LICENSE                                      # Project licensing terms
+├── .gitignore                                   # Git tracking exclusions
 │
 ├── sql/
-│   ├── 1_Database_and _schemas.sql            # Base DB & layout schemas setup[cite: 11]
-│   ├── 2_Warehouses.sql                       # Virtual scaling warehouse configs[cite: 10]
-│   ├── 3_FileFormats.sql                      # CSV, JSON, Parquet standard parsers[cite: 9]
-│   ├── 4_Named_Internal_Stages.sql            # File repository ingestion targets[cite: 8]
-│   ├── 5_Audit_Layer.sql                      # Registry & load tracking engines[cite: 7]
-│   ├── 6_Raw_Tables.sql                       # Transient tables & Raw Reject Logs[cite: 6]
-│   ├── 7_clean_tables.sql                     # Verified Silver targets & Rejects[cite: 5]
-│   ├── 8_Streams_On_Raw.sql                   # Delta change listeners on landing rows[cite: 4]
-│   ├── 9_copy_Pipe.sql                        # Snowpipe automation definitions[cite: 2]
-│   │
-│   ├── 14_Mart_Layer_Views.sql                # Analytical views & Master KPI marts[cite: 14]
-│   ├── 16_Clean_To_Core_Tasks.sql             # Silver-to-Gold change tasks[cite: 16]
-│   ├── 17_Core_SCD2_Stored_Procedures.sql     # Customer, SKU, & Store history engines[cite: 17]
-│   ├── 18_Raw_To_Clean_Tasks.sql              # Ingestion task management DAG[cite: 18]
-│   ├── 19_Raw_Stream_To_Clean_Procedures.sql  # Row quality checks and quarantine code[cite: 19]
-│   ├── 20_Core_Tables_DDL.sql                 # Warehouse relational schemas[cite: 20]
-│   └── 21_Pipe_Refresh_Automation.sql         # Manual pipe syncs & route controls[cite: 21]
+│   ├── 1_Database_and _schemas.sql             # Database creation & Medallion schema initialization
+│   ├── 2_Warehouses.sql                         # Virtual compute infrastructure configuration
+│   ├── 3_FileFormats.sql                        # CSV, JSON, and Parquet parsing definitions
+│   ├── 4_Named_Internal_Stages.sql              # Secure data file arrival zones
+│   ├── 5_Audit_Layer.sql                        # File registries, batch states, and load logging
+│   ├── 6_Raw_Tables.sql                         # Transient landing tier schemas & master reject log
+│   ├── 7_clean_tables.sql                       # Silver verified targets and row quality rejects
+│   ├── 8_Streams_On_Raw.sql                     # Change Data Capture (CDC) streaming offsets on Raw layer
+│   ├── 88_Streams_on_clean.sql                  # Change Data Capture (CDC) offsets on Clean layer
+│   ├── 9_copy_Pipe.sql                          # Snowpipe automated continuous ingestion pipelines
+│   ├── 99_updated_copy_pipe.sql                 # Enhanced parsing and dynamic formatting copy updates
+│   ├── 10_Core_Tables.sql                       # Relational DDL for Fact and SCD Type-2 tables
+│   ├── 11_Stored_Procedures_Raw_to_Clean.sql    # Validation frameworks, error checks, and row isolation logic
+│   ├── 12_Stored_Procedure_Clean_to_Core.sql    # SCD Type-2 point-in-time merge and transaction operations
+│   ├── 13_Tasks_Raw_To_Clean.sql                # Serverless event-driven ingestion task definitions
+│   ├── 14_Tasks_Clean_to_Core.sql               # Serverless golden-tier processing orchestrations
+│   ├── 15_Tasks_Resume.sql                      # Pipeline execution controls and DAG activation switches
+│   ├── 16_Marts_Schema.sql                      # Analytics views, Customer 360, and Executive metrics
+│   ├── 17_ML_APP_SCHEMA.sql                     # Snowflake Cortex forecasting and anomaly models
+│   └── 18_Streamlit.sql                         # UI workspace deployments and SiS access boundaries
 │
-├── cdc_json/                                  # Semi-structured change events
-├── customer_parquet/                          # Structured client datasets
-├── sales_csv/                                 # Storefront transactional flat files
-│
-├── streamlit/
-│   ├── ai_control_tower.py                    # SiS Operations KPI application[cite: 12, 13]
-│   └── ask_retail360.py                       # Conversational Cortex chat assistant[cite: 12]
-│
-└── screenshots/                               # Interface presentation files
+└── streamlit/
+    ├── ai_control_tower.py                      # Executive operational dashboard interface
+    └── ask_retail360.py                         # Conversational GenAI search assistant interface
 
 ````
 

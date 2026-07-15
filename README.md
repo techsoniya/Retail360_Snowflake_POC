@@ -91,7 +91,7 @@ This repository serves as a showcase for production data engineering patterns, i
 
 ```
 
-##📈 Data Flow
+## 📈 Data Flow
 
 ```text
 
@@ -129,10 +129,11 @@ Analytics Marts
  └────────► Cortex Analyst
 
 ```
-##🛠 Technology Stack
+## 🛠 Technology Stack
 
 Retail360 leverages Snowflake's native ecosystem to build a modern, cloud-native analytics platform without relying on external orchestration or machine learning frameworks.
 
+``` text
 Category	Technologies
 Cloud Data Platform	Snowflake
 Programming	SQL, Python
@@ -144,7 +145,9 @@ Machine Learning	Snowflake Cortex Forecasting, Cortex Anomaly Detection
 Artificial Intelligence	Snowflake Cortex Analyst (Natural Language SQL)
 Visualization	Streamlit in Snowflake
 Governance	Reject Framework, Audit Logs, Validation Rules
-🏛 Enterprise Architecture
+```
+
+## 🏛 Enterprise Architecture
 
 Retail360 follows the Medallion Architecture, a widely adopted design pattern for building scalable and reliable data platforms.
 
@@ -210,14 +213,14 @@ Rather than transforming raw data directly into reports, the pipeline processes 
 
 ```
 
-##🏗 Medallion Architecture
-###🥉 Bronze Layer (RAW)
+## 🏗 Medallion Architecture
+### 🥉 Bronze Layer (RAW)
 
 The Raw layer acts as the immutable landing zone for all incoming retail datasets.
 
 Incoming files are continuously loaded into Snowflake using Snowpipe, preserving the original structure and metadata for complete traceability.
 
-####Responsibilities
+#### Responsibilities
 Continuous ingestion
 Metadata tracking
 Source preservation
@@ -228,7 +231,7 @@ Internal Stages
 File Formats
 Snowpipe
 Transient Tables
-###🥈 Silver Layer (CLEAN)
+### 🥈 Silver Layer (CLEAN)
 
 The Clean layer transforms raw business data into trusted datasets through a validation-first approach.
 
@@ -238,7 +241,7 @@ This approach minimizes data loss while maintaining high data quality.
 
 Validation Framework
 
-####The platform validates:
+#### The platform validates:
 
 Required fields
 Null values

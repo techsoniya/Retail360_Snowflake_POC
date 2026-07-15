@@ -173,7 +173,7 @@ Retail360 follows the Medallion Architecture, a widely adopted design pattern fo
 
 Rather than transforming raw data directly into reports, the pipeline processes information through multiple layers, ensuring data quality, governance, traceability, and historical consistency.
 
-![Enterprize_Architecture](screenshots/Enterprize_Architecture.png)
+![Enterprise_Architecture](screenshots/Enterprise_Architecture.png)
 
 ```text
 

@@ -577,6 +577,11 @@ A central executive dashboard offering interactive filtering and real-time visua
 * **Executive Dashboards:** High-level summaries of primary organizational health metrics.
 * **Predictive Visuals:** Clear graphs showing machine learning demand forecasts alongside anomaly alert markers.
 * **Granular Drill-Downs:** Easily breaks down performance data by specific products, dates, or retail locations.
+* 
+![Control1](screenshots/Control1.png)
+![Control2](screenshots/Control2.png)
+![Control3](screenshots/Control3.png)
+
 
 ### 💬 Ask Retail360 (Conversational AI)
 An interactive natural language interface powered by **Snowflake Cortex Analyst**. It lets non-technical business users run complex database queries using plain conversational text instead of writing code.
@@ -584,6 +589,12 @@ An interactive natural language interface powered by **Snowflake Cortex Analyst*
 *   *"Which store generated the highest revenue last month?"*
 *   *"Show me the top 10 products by profit margin."*
 *   *"Forecast next month's sales for our primary storefronts."*
+
+![AskMe1](screenshots/AskMe1.png)
+![AskMe2](screenshots/AskMe2.png)
+![AskMe3](screenshots/AskMe3.png)
+![AskMe4](screenshots/AskMe4.png)
+
 
 ```text
  [ Natural Language Prompt ] ──► [ Cortex Analyst Semantic Model ] ──► [ Validated SQL Auto-Gen ]
@@ -723,6 +734,8 @@ The project is designed for modular deployment. Execute the SQL scripts sequenti
 Deploy the following applications inside Snowflake using the matching application scripts from the repository:
 *   **AI Control Tower** (`streamlit/ai_control_tower.py`)
 *   **Ask Retail360** (`streamlit/ask_retail360.py`)
+
+![Stremlit_Apps](screenshots/Stremlit_Apps)
 
   
 ## AI Control Tower

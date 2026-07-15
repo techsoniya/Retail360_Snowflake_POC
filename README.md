@@ -150,6 +150,8 @@ Retail360 follows the Medallion Architecture, a widely adopted design pattern fo
 
 Rather than transforming raw data directly into reports, the pipeline processes information through multiple layers, ensuring data quality, governance, traceability, and historical consistency.
 
+```text
+
                     Retail Data Sources
           (CSV • JSON • Parquet • Batch Files)
                            │
@@ -205,14 +207,17 @@ Rather than transforming raw data directly into reports, the pipeline processes 
          ▼                                    ▼
  AI Control Tower                  Ask Retail360
   (Streamlit)                     Cortex Analyst
-🏗 Medallion Architecture
-🥉 Bronze Layer (RAW)
+
+```
+
+##🏗 Medallion Architecture
+###🥉 Bronze Layer (RAW)
 
 The Raw layer acts as the immutable landing zone for all incoming retail datasets.
 
 Incoming files are continuously loaded into Snowflake using Snowpipe, preserving the original structure and metadata for complete traceability.
 
-Responsibilities
+####Responsibilities
 Continuous ingestion
 Metadata tracking
 Source preservation
@@ -223,7 +228,7 @@ Internal Stages
 File Formats
 Snowpipe
 Transient Tables
-🥈 Silver Layer (CLEAN)
+###🥈 Silver Layer (CLEAN)
 
 The Clean layer transforms raw business data into trusted datasets through a validation-first approach.
 
@@ -233,7 +238,7 @@ This approach minimizes data loss while maintaining high data quality.
 
 Validation Framework
 
-The platform validates:
+####The platform validates:
 
 Required fields
 Null values
@@ -251,7 +256,7 @@ Outputs
 
 📋 Audit Logs
 
-🥇 Gold Layer (CORE)
+###🥇 Gold Layer (CORE)
 
 The Core Warehouse represents the trusted source of truth for analytical reporting.
 
@@ -281,7 +286,10 @@ Inventory Insights
 Revenue Trends
 Forecast Results
 Anomaly Reports
-🔄 End-to-End Pipeline
+
+##🔄 End-to-End Pipeline
+
+```text
 Landing Files
       │
       ▼
@@ -312,56 +320,61 @@ Analytics Marts
  ├────────► AI Control Tower
  │
  └────────► Cortex Analyst
-⚡ Enterprise Design Principles
+```
+##⚡ Enterprise Design Principles
 
 Retail360 was built using modern enterprise data engineering practices rather than traditional batch ETL.
 
-✅ Incremental Processing
+###✅ Incremental Processing
 
 Only newly ingested records are processed using Snowflake Streams, reducing unnecessary compute and improving efficiency.
 
-✅ Idempotent Data Loads
+###✅ Idempotent Data Loads
 
 MERGE operations ensure rerunning the pipeline does not introduce duplicate records.
 
-✅ Historical Data Preservation
+###✅ Historical Data Preservation
 
 SCD Type-2 dimensions maintain complete business history, supporting accurate point-in-time analysis.
 
-✅ Automated Orchestration
+###✅ Automated Orchestration
 
 Snowflake Tasks coordinate ingestion, validation, transformation, and analytical refreshes without manual intervention.
 
-✅ Data Quality by Design
+### Data Quality by Design
 
 A dedicated validation framework separates trusted business data from rejected records while maintaining comprehensive audit logs.
 
-⚙️ Enterprise Data Pipeline
+##⚙️ Enterprise Data Pipeline
 
 Retail360 is built as a fully automated, event-driven data platform where every stage of the pipeline is designed to be modular, scalable, and resilient. Instead of relying on external orchestration tools, the platform leverages native Snowflake capabilities to manage ingestion, transformation, validation, orchestration, and analytics.
 
 The pipeline follows a layered approach where each component has a clearly defined responsibility, enabling maintainability, observability, and reliable data processing.
 
-📥 Data Ingestion Layer
+##📥 Data Ingestion Layer
 
 The ingestion layer is responsible for continuously importing retail datasets into Snowflake while preserving source fidelity.
 
 Incoming business data is uploaded to Snowflake Internal Stages in multiple formats including CSV, JSON, and Parquet. Snowpipe continuously monitors these stages and automatically ingests newly arrived files without requiring manual execution.
 
-Key Responsibilities
+###Key Responsibilities
 Continuous file ingestion
 Multi-format file support
 Automatic schema mapping
 Metadata capture
 Source preservation
 Incremental loading
-Snowflake Components Used
+
+###Snowflake Components Used
+```text
 Component	Purpose
 Internal Stage	Stores incoming retail datasets
 File Formats	Parses CSV, JSON and Parquet files
 Snowpipe	Automatically ingests newly uploaded files
 Raw Tables	Stores immutable source records
-🌊 Change Data Capture (CDC)
+```
+
+##🌊 Change Data Capture (CDC)
 
 After data lands in the RAW layer, Snowflake Streams detect incremental changes made to the source tables.
 

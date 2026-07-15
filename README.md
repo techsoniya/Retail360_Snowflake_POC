@@ -89,8 +89,12 @@ This repository serves as a showcase for production data engineering patterns, i
   AI Control Tower               Ask Retail360
 (Streamlit Dashboard)           (Cortex Analyst)
 
+```
 
-📈 Data Flow
+##📈 Data Flow
+
+```text
+
 Retail Files
       │
       ▼
@@ -124,8 +128,8 @@ Analytics Marts
  │
  └────────► Cortex Analyst
 
-
- 🛠 Technology Stack
+```
+##🛠 Technology Stack
 
 Retail360 leverages Snowflake's native ecosystem to build a modern, cloud-native analytics platform without relying on external orchestration or machine learning frameworks.
 

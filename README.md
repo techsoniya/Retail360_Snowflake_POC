@@ -9,7 +9,10 @@ Retail360 is an enterprise-scale retail analytics platform built entirely within
 
 Click the preview card below to watch the complete platform walkthrough on Google Drive:
 
-[![Watch the Platform Demo](https://raw.githubusercontent.com/DenverCoder1/github-readme-youtube-cards/main/assets/default.png)](https://drive.google.com/file/d/1DehTzIUXg6SS6ltsXhV8JG5OP1w0JKOA/view?usp=drive_link)
+<a href="https://drive.google.com/file/d/1DehTzIUXg6SS6ltsXhV8JG5OP1w0JKOA/view?usp=drive_link" target="_blank">
+   <img src="https://raw.githubusercontent.com/DenverCoder1/github-readme-youtube-cards/main/assets/default.png" alt="Watch Platform Walkthrough" width="650" style="max-width: 100%; border-radius: 8px;">
+</a>
+
 ---
 
 

@@ -571,7 +571,6 @@ An interactive natural language interface powered by **Snowflake Cortex Analyst*
 
 ```
 
-```text?code_stdout&code_event_index=1
 ## 🎯 Engineering Principles
 
 Retail360 is engineered around production-grade data architecture patterns rather than simple tool demonstrations. The platform enforces rigid engineering standards to ensure real-world scalability, reliability, and cost efficiency.
@@ -645,7 +644,8 @@ retail360/
 ├── architecture/                     # Systems diagram assets
 └── assets/                           # Miscellaneous repository resources
 
-```
+
+````
 
 ## 🚀 Getting Started
 

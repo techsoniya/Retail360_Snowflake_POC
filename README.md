@@ -17,10 +17,8 @@ Click the button below to watch the complete platform walkthrough video on Googl
 
 ---
 
-<video src="screenshots/Can_you_gennerate_a_video_for_t.mp4" controls width="100%">
-  Your browser does not support the video tag.
-</video>
 
+![Demo showing feature in action](screenshots/demo.gif)
 
 ## 🌟 Highlights
 

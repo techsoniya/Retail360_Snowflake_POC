@@ -18,7 +18,9 @@ Click the button below to watch the complete platform walkthrough video on Googl
 ---
 
 ## VIDEO SNIPPETS
+##
 ![Demo showing feature in action](screenshots/demo.gif)
+##
 ![Demo showing feature in action](screenshots/demo1.gif)
 
 ## 🌟 Highlights
